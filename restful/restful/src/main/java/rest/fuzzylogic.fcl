@@ -1,0 +1,82 @@
+
+FUNCTION_BLOCK tipper	// Block definition (there may be more than one block per file)
+
+// Define input variables
+VAR_INPUT				
+	boy : REAL;
+	kilo : REAL;
+
+END_VAR
+
+// Define output variable
+VAR_OUTPUT				
+	kitleindexi : REAL;
+END_VAR
+
+// Fuzzify input variable 'service': {'poor', 'good' , 'excellent'}
+FUZZIFY boy			
+	TERM boy1 := trian 1.45 1.52 1.61 ; 
+	TERM boy2 := trian 1.60 1.70 1.82 ; 
+        TERM boy3 := trian 1.81 1.90 2.00 ; 
+END_FUZZIFY
+
+// Fuzzify input variable 'food': { 'rancid', 'delicious' }
+FUZZIFY kilo			
+	TERM kilo1 := trian 40 45 52; 
+
+	TERM kilo2 :=trian 51 55 62;
+
+	TERM kilo3 :=trian 61 65 72;
+
+        TERM kilo4 :=trian 71 75 87;
+
+        TERM kilo5 :=trian 86 87 102;
+
+        TERM kilo6 :=trian 101 106 110;
+END_FUZZIFY
+
+// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+DEFUZZIFY kitleindexi			
+        TERM Zayif:=trian  0 15 19 ;
+	TERM Normal :=trian  20 22 25 ;
+	TERM HafifKilolu:= trian  26 28 30;
+	TERM Obez:=trian  31 32 35;
+      
+
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+// Inference rules
+RULEBLOCK No1
+	AND : MIN;	// Use 'min' for 'and'
+	ACT : MIN;	// Use 'min' activation method
+	ACCU : MAX;	// Use 'max' accumulation method
+
+	RULE 1 : IF kilo IS kilo1 AND boy IS boy1 THEN kitleindexi IS Zayif;
+	RULE 2 : IF kilo IS kilo1 AND boy IS boy2 THEN kitleindexi IS Zayif; 
+	RULE 3 : IF kilo IS kilo1 AND boy IS boy3 THEN kitleindexi IS Zayif;
+
+        RULE 4 : IF kilo IS kilo2 AND boy IS boy1 THEN kitleindexi IS Normal;
+        RULE 5 : IF kilo IS kilo2 AND boy IS boy2 THEN kitleindexi IS Zayif;
+        RULE 6 : IF kilo IS kilo2 AND boy IS boy3 THEN kitleindexi IS Zayif;
+
+        RULE 7 : IF kilo IS kilo3 AND boy IS boy1 THEN kitleindexi IS HafifKilolu;
+        RULE 8 : IF kilo IS kilo3 AND boy IS boy2 THEN kitleindexi IS Normal;
+        RULE 9 : IF kilo IS kilo3 AND boy IS boy3 THEN kitleindexi IS Zayif;
+
+
+        RULE 10 : IF kilo IS kilo4 AND boy IS boy1 THEN kitleindexi IS Obez;
+        RULE 11 : IF kilo IS kilo4 AND boy IS boy2 THEN kitleindexi IS HafifKilolu;
+        RULE 12 : IF kilo IS kilo4 AND boy IS boy3 THEN kitleindexi IS Normal;
+
+        RULE 13 : IF kilo IS kilo5 AND boy IS boy1 THEN kitleindexi IS Obez;
+        RULE 14 : IF kilo IS kilo5 AND boy IS boy2 THEN kitleindexi IS Obez;
+        RULE 15 : IF kilo IS kilo5 AND boy IS boy3 THEN kitleindexi IS HafifKilolu;
+
+        RULE 16 : IF kilo IS kilo6 AND boy IS boy1 THEN kitleindexi IS Obez;
+        RULE 17 : IF kilo IS kilo6 AND boy IS boy2 THEN kitleindexi IS Obez;
+        RULE 18 : IF kilo IS kilo6 AND boy IS boy3 THEN kitleindexi IS HafifKilolu;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
